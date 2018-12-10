@@ -1,15 +1,22 @@
 const { GraphQLServer } = require('graphql-yoga')
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/test5');
+mongoose.connect('mongodb://localhost/test');
 
-var PrimeNumber = mongoose.model("PrimeNumber", {
-  text: String,
-  match: Boolean
-});
+var Schema = mongoose.Schema;
+
+var PrimeNumber = mongoose.model("PrimeNumber", new Schema({
+  text: String }),
+'primeList' );
+
+// var PrimeNumber = mongoose.model("PrimeNumber", {
+//   text: String,
+//   match: Boolean
+// });
 
 var CheckedNumber = mongoose.model("CheckedNumber", {
-  text: String
+  text: String,
+  // matchPrime: String
 });
 
 
@@ -21,7 +28,6 @@ const typeDefs = `
   type PrimeNumber {
     id: ID!
     text: String!
-    match: Boolean!
   }
   type CheckedNumber {
     id: ID!
@@ -29,8 +35,7 @@ const typeDefs = `
   }
   type Mutation {
     createCheckedNumber(text: String!): CheckedNumber
-    createPrimeNumber(text: String!): PrimeNumber
-    updatePrimeNumber(id: ID!, match: Boolean!): Boolean
+    updateCheckedNumber(id: ID!): Boolean
     removeCheckedNumber(id: ID!): Boolean
     removePrimeNumber(id: ID!): Boolean
   }
@@ -47,13 +52,8 @@ const resolvers = {
       await checkedNumber.save();
       return checkedNumber;
     },
-    createPrimeNumber: async (_, {text}) => {
-      const primeNumber = new PrimeNumber({text, match: false});
-      await primeNumber.save();
-      return primeNumber;
-    },
-    updatePrimeNumber: async (_, {id, match}) => {
-      await PrimeNumber.findByIdAndUpdate(id, {match});
+    updateCheckedNumber: async (_, {id, matchPrime}) => {
+      await CheckedNumber.findByIdAndUpdate(id);
       return true;
     },
     removeCheckedNumber: async (_, {id}) => {
