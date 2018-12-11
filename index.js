@@ -16,7 +16,7 @@ var PrimeNumber = mongoose.model("PrimeNumber", new Schema({
 
 var CheckedNumber = mongoose.model("CheckedNumber", {
   text: String,
-  // matchPrime: String
+  matchingPrime: String
 });
 
 
@@ -32,9 +32,10 @@ const typeDefs = `
   type CheckedNumber {
     id: ID!
     text: String!
+    matchingPrime: String
   }
   type Mutation {
-    createCheckedNumber(text: String!): CheckedNumber
+    createCheckedNumber(text: String!, matchingPrime: String): CheckedNumber
     updateCheckedNumber(id: ID!): Boolean
     removeCheckedNumber(id: ID!): Boolean
     removePrimeNumber(id: ID!): Boolean
@@ -48,12 +49,12 @@ const resolvers = {
   },
   Mutation: {
     createCheckedNumber: async (_, {text}) => {
-      const checkedNumber = new CheckedNumber({text});
+      const checkedNumber = new CheckedNumber({text, matchingPrime: "nada"});
       await checkedNumber.save();
       return checkedNumber;
     },
-    updateCheckedNumber: async (_, {id, matchPrime}) => {
-      await CheckedNumber.findByIdAndUpdate(id);
+    updateCheckedNumber: async (_, {id, matchingPrime}) => {
+      await CheckedNumber.findByIdAndUpdate(id, {matchingPrime});
       return true;
     },
     removeCheckedNumber: async (_, {id}) => {
