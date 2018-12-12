@@ -9,11 +9,6 @@ var PrimeNumber = mongoose.model("PrimeNumber", new Schema({
   text: String }),
 'primeList' );
 
-// var PrimeNumber = mongoose.model("PrimeNumber", {
-//   text: String,
-//   match: Boolean
-// });
-
 var CheckedNumber = mongoose.model("CheckedNumber", {
   text: String,
   matchingPrime: String
